@@ -16,6 +16,8 @@ namespace SME_API_Plateia.Controllers
 {
     public class DadosEventoController : ApiController
     {
+
+        [Route("api/evento/listaeventos")]
         public IEnumerable<Models.DadosEvento> Get()
         {
 
@@ -36,7 +38,8 @@ namespace SME_API_Plateia.Controllers
                                 + "on E.ShowId = S.Id "
                                 + "inner join[PlateiaSMESP].[dbo].[ShowType] ST(nolock) "
                                 + "on S.ShowTypeId = ST.Id "
-                                + "where getdate() between e.EnrollStartAt and e.EnrollEndAt";
+                                + "where E.PresentationDate between getdate() and DATEADD(day, 10, Getdate())"
+                                + "and E.TicketAvailable > 0 and GETDATE() >= E.EnrollStartAt and GETDATE() <= E.EnrollEndAt";
 
                 cn.Open();
 
@@ -64,8 +67,7 @@ namespace SME_API_Plateia.Controllers
                 cn.Close();
                 throw;
             }
-
-
+            
             return retDados;
 
         }

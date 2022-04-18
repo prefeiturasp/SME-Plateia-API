@@ -15,6 +15,7 @@ namespace SME_API_Plateia
             config.MapHttpAttributeRoutes();
 
 
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
