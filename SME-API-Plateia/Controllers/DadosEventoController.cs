@@ -7,7 +7,6 @@ using System.Web.Http;
 using System.Data.Entity;
 using SME_API_DataAccess;
 using System.Data.SqlClient;
-
 using System.Configuration;
 using System.Data;
 
