@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>SME_API_Plateia</RootNamespace>
     <UserSecretsId>c7c5eb46-ca9b-444b-ad64-aae43df947c5</UserSecretsId>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
