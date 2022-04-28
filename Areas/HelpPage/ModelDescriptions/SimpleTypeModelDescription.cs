@@ -1,6 +1,0 @@
-namespace SME_API_Plateia.Areas.HelpPage.ModelDescriptions
-{
-    public class SimpleTypeModelDescription : ModelDescription
-    {
-    }
-}
