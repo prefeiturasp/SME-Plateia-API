@@ -18,11 +18,10 @@ var app = builder.Build();
 var cs = builder.Configuration.GetConnectionString("Plateia");
     
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
