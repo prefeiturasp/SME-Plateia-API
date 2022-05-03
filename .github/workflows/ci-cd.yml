@@ -2,6 +2,11 @@ name: SME-Plateia-API
  
 on:
 
+  push:
+    branches: [ main, homolog, development ]
+    paths-ignore:
+    - ".github/workflows/**"  
+
   workflow_dispatch:
 
 jobs:
