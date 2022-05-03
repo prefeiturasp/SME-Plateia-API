@@ -34,7 +34,7 @@ jobs:
   
     runs-on: self-hosted
     needs: [ build ]
-    if: ${{ github.ref != 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     environment:
       name: production
     steps:
@@ -49,7 +49,7 @@ jobs:
   
     runs-on: self-hosted
     needs: [ build ]
-    if: ${{ github.ref != 'refs/heads/homolog' }}
+    if: ${{ github.ref == 'refs/heads/homolog' }}
     environment:
       name: release
     steps:
@@ -65,7 +65,7 @@ jobs:
   
     runs-on: self-hosted
     needs: [ build ]
-    if: ${{ github.ref != 'refs/heads/development' }}
+    if: ${{ github.ref == 'refs/heads/development' }}
     environment:
       name: development
     steps:
