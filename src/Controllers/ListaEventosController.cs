@@ -46,7 +46,7 @@ namespace SME_API_Plateia.Controllers
                         TipoEspetaculo = e.Show.ShowType.Name,
                         Titulo = e.Show.Name,
                         Sintese = e.Show.Synopsis,
-                        Data = Convert.ToString(e.PresentationDate).Substring(0,10),
+                        Data = Convert.ToString(e.PresentationDate.ToString("dd/MM/yyyy")).Substring(0,10),
                         StatusInscricao = "Inscrições abertas"
                     }).ToList();
 
