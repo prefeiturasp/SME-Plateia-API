@@ -30,12 +30,44 @@ jobs:
              docker build . --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-plateia-api
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-plateia-api
              
-  deploy:
+  deploy-prod:
   
     runs-on: self-hosted
     needs: [ build ]
+    if: ${{ github.ref != 'refs/heads/main' }}
     environment:
       name: production
+    steps:
+      - name: Redeploy
+        uses: luizhpriotto/action_images@kubectl-v2.0
+        env: 
+          RANCHER_URL: ${{ secrets.RANCHER_URL }}
+          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
+          NAMESPACE: sme-plateia-api
+
+  deploy-homolog:
+  
+    runs-on: self-hosted
+    needs: [ build ]
+    if: ${{ github.ref != 'refs/heads/homolog' }}
+    environment:
+      name: release
+    steps:
+      - name: Redeploy
+        uses: luizhpriotto/action_images@kubectl-v2.0
+        env: 
+          RANCHER_URL: ${{ secrets.RANCHER_URL }}
+          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
+          NAMESPACE: sme-plateia-api
+          
+          
+  deploy-dev:
+  
+    runs-on: self-hosted
+    needs: [ build ]
+    if: ${{ github.ref != 'refs/heads/development' }}
+    environment:
+      name: development
     steps:
       - name: Redeploy
         uses: luizhpriotto/action_images@kubectl-v2.0
