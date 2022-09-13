@@ -43,7 +43,7 @@ jobs:
         env: 
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
           RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-          NAMESPACE: sme-plateia-api
+          NAMESPACE: sme-plateia-api1
 
   deploy-homolog:
   
