@@ -1,11 +1,10 @@
 from django.db import models
+from django.contrib.auth.base_user import AbstractBaseUser
 
-
-class User(models.Model):
+class User(AbstractBaseUser):
     id = models.CharField(db_column='Id', primary_key=True, max_length=36) 
     entityid = models.CharField(db_column='EntityId', max_length=36) 
     login = models.CharField(db_column='Login', max_length=500, blank=True, null=True) 
-    password = models.CharField(db_column='Password', max_length=128, blank=True, null=True) 
     crypt = models.CharField(db_column='Crypt', max_length=128) 
     name = models.CharField(db_column='Name', max_length=200, blank=True, null=True) 
     rf = models.CharField(db_column='RF', max_length=25, blank=True, null=True) 
@@ -19,5 +18,4 @@ class User(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate') 
 
     class Meta:
-        
         db_table = 'User'

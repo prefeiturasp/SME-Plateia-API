@@ -3,15 +3,14 @@ from event.models import Event
 from user.models import User
 
 class Inscription(models.Model):
-    id = models.BigAutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
-    userid = models.ForeignKey(User, models.DO_NOTHING, db_column='UserId')  # Field name made lowercase.
-    eventid = models.ForeignKey(Event, models.DO_NOTHING, db_column='EventId')  # Field name made lowercase.
-    presence = models.BooleanField(db_column='Presence')  # Field name made lowercase.
-    priority = models.IntegerField(db_column='Priority')  # Field name made lowercase.
-    state = models.SmallIntegerField(db_column='State')  # Field name made lowercase.
-    createdate = models.DateTimeField(db_column='CreateDate')  # Field name made lowercase.
-    updatedate = models.DateTimeField(db_column='UpdateDate')  # Field name made lowercase.
+    id = models.BigAutoField(db_column='Id', primary_key=True)
+    userid = models.ForeignKey(User, models.DO_NOTHING, db_column='UserId')
+    eventid = models.ForeignKey(Event, models.DO_NOTHING, db_column='EventId')
+    presence = models.BooleanField(db_column='Presence')
+    priority = models.IntegerField(db_column='Priority')
+    state = models.SmallIntegerField(db_column='State')
+    createdate = models.DateTimeField(db_column='CreateDate')
+    updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
-        
         db_table = 'Inscription'
