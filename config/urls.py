@@ -4,12 +4,15 @@ from django.urls import path, include
 from rest_framework import routers
 
 from user import urls as user_urls
+from inscription import urls as inscription_urls
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 router = routers.DefaultRouter()
 
-routeLists = []
+routeLists = [
+    inscription_urls.routeList
+]
 
 for routeList in routeLists:
     for route in routeList:
