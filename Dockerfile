@@ -1,20 +1,12 @@
-# https://hub.docker.com/_/microsoft-dotnet
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /source
+FROM python:3.11-slim-bullseye
+ENV PYTHONUNBUFFERED 1
+ADD . /code
+WORKDIR /code
+RUN apt-get update && \
+  apt-get install libpq-dev -y && \
+  python -m pip --no-cache install -U pip && \
+  #    python -m pip --no-cache install Cython && \
+  #    python -m pip --no-cache install numpy && \
+  python -m pip --no-cache install -r requirements.txt
 
-# copy csproj and restore as distinct layers
-COPY *.sln /source/src
-COPY src/*.csproj .
-RUN dotnet restore -r linux-x64 --disable-parallel
-
-# copy everything else and build app
-COPY src/. .
-WORKDIR /source
-RUN dotnet publish -c release -o /app -r linux-x64 --self-contained false --no-restore
-
-# final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
-WORKDIR /app
-COPY --from=build /app ./
-RUN sed -i 's/SECLEVEL=2/SECLEVEL=1/g' /etc/ssl/openssl.cnf
-ENTRYPOINT ["dotnet","SME-API-Plateia.dll"]
+EXPOSE 8001
