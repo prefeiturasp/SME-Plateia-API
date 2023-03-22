@@ -2,8 +2,8 @@ from django.db import models
 from general.models import City
 from user.models import User
 
+
 class Comment(models.Model):
-    id = models.BigAutoField(db_column='Id', primary_key=True)
     userid = models.ForeignKey(User, models.DO_NOTHING, db_column='UserId')
     showid = models.ForeignKey('Show', models.DO_NOTHING, db_column='ShowId')
     content = models.CharField(db_column='Content', max_length=500)
@@ -11,18 +11,12 @@ class Comment(models.Model):
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
-    class Meta:
-        db_table = 'Comment'
-        
+
 class Genre(models.Model):
-    id = models.BigAutoField(db_column='Id', primary_key=True)
     name = models.CharField(db_column='Name', max_length=150)
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
-
-    class Meta:
-        db_table = 'Genre'
 
 
 class Genreshowtype(models.Model):
@@ -30,12 +24,10 @@ class Genreshowtype(models.Model):
     showtypeid = models.ForeignKey('Showtype', models.DO_NOTHING, db_column='ShowTypeId')
 
     class Meta:
-        db_table = 'GenreShowType'
         unique_together = (('genreid', 'showtypeid'),)
 
 
 class File(models.Model):
-    id = models.BigAutoField(db_column='Id', primary_key=True)
     name = models.CharField(db_column='Name', max_length=300)
     length = models.IntegerField(db_column='Length')
     path = models.TextField(db_column='Path')
@@ -46,12 +38,8 @@ class File(models.Model):
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
-    class Meta:
-        db_table = 'File'
-
 
 class Show(models.Model):
-    id = models.BigAutoField(db_column='Id', primary_key=True)
     name = models.CharField(db_column='Name', max_length=150)
     synopsis = models.CharField(db_column='Synopsis', max_length=1500)
     classification = models.CharField(db_column='Classification', max_length=150, blank=True, null=True)
@@ -65,23 +53,15 @@ class Show(models.Model):
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
-    class Meta:
-        db_table = 'Show'
-
 
 class Showtype(models.Model):
-    id = models.BigAutoField(db_column='Id', primary_key=True)
     name = models.CharField(db_column='Name', max_length=150)
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
-    class Meta:
-        db_table = 'ShowType'
-
 
 class Event(models.Model):
-    id = models.BigAutoField(db_column='Id', primary_key=True)
     showid = models.ForeignKey('Show', models.DO_NOTHING, db_column='ShowId')
     cityid = models.ForeignKey(City, models.DO_NOTHING, db_column='CityId')
     local = models.CharField(db_column='Local', max_length=300)
@@ -100,13 +80,9 @@ class Event(models.Model):
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
-    class Meta:
-        db_table = 'Event'        
-
-
 
 class Eventhistory(models.Model):
-    id = models.BigAutoField(db_column='Id', primary_key=True)
+
     showid = models.BigIntegerField(db_column='ShowId', blank=True, null=True)
     cityid = models.CharField(db_column='CityId', max_length=36, blank=True, null=True)
     local = models.CharField(db_column='Local', max_length=300, blank=True, null=True)

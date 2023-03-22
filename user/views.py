@@ -8,10 +8,11 @@ from drf_spectacular.utils import extend_schema
 
 from .serializers import BaseUserSerializer, UserSerializer, SwaggerLogin
 
+
 class JWTAuthenticationViewSet(viewsets.GenericViewSet):
     serializer_class = BaseUserSerializer
     http_method_names = ['post']
-    
+
     @extend_schema(request=SwaggerLogin)
     @extend_schema(description='Autenticação', methods=["POST"])
     def authenticate(self, request, *args, **kwargs):
