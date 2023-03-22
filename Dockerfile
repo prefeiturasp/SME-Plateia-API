@@ -1,12 +1,12 @@
-FROM python:3.11-slim-bullseye
+FROM python:3.11-alpine
 ENV PYTHONUNBUFFERED 1
-ADD . /code
 WORKDIR /code
-RUN apt-get update && \
-  apt-get install libpq-dev -y && \
-  python -m pip --no-cache install -U pip && \
-  #    python -m pip --no-cache install Cython && \
-  #    python -m pip --no-cache install numpy && \
-  python -m pip --no-cache install -r requirements.txt
+ADD . /code
+RUN apk update && \
+    apk add --no-cache gcc musl-dev postgresql-libs postgresql-dev && \
+    pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip cache purge && \
+    apk del postgresql-dev gcc musl-dev
 
 EXPOSE 8001
