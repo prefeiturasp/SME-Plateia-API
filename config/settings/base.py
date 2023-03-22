@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 import environ
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = (
@@ -61,7 +62,9 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'corsheaders',
-    # 'rest_framework',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'drf_spectacular'
 ]
 
 LOCAL_APPS = [
@@ -112,16 +115,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'sql_server.pyodbc',
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': env('POSTGRES_DB'),
         'USER': env('POSTGRES_USER'),
         'PASSWORD': env('POSTGRES_PASSWORD'),
         'HOST': env('POSTGRES_HOST'),
         'PORT': env('POSTGRES_PORT'),
-        # 'OPTIONS': {
-        #     'driver': 'ODBC Driver 17 for SQL Server'
-        # },
     },
 }
 
@@ -191,9 +190,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication'
-    ]
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1)
+}
+
+# https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-AUTHENTICATION_BACKENDS
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend', # mantém o backend padrão do Django
+    'user.auth.CustomUserBackend', # backend personalizado para autenticação com o campo "login"
+]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
 
@@ -222,4 +236,13 @@ LOGGING = {
         }
     },
     "root": {"level": "INFO", "handlers": ["console"]},
+}
+
+# https://drf-spectacular.readthedocs.io/en/latest/readme.html#installation
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Plateia API',
+    'DESCRIPTION': 'API para projeto plateia app',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
