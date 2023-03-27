@@ -6,7 +6,11 @@ from rest_framework import routers
 from user import urls as user_urls
 from inscription import urls as inscription_urls
 
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 
 router = routers.DefaultRouter()
 
@@ -28,4 +32,4 @@ urlpatterns = [
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
-
+from config.schema import *

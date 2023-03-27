@@ -3,27 +3,23 @@ from django.contrib.auth import authenticate, logout
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from drf_spectacular.utils import extend_schema
+from .serializers import BaseUserSerializer, UserSerializer, SwaggerLoginSerializer
 
-from .serializers import BaseUserSerializer, UserSerializer, SwaggerLogin
 
-
-class JWTAuthenticationViewSet(viewsets.GenericViewSet):
+class JWTAuthenticationViewSet(viewsets.ModelViewSet):
     serializer_class = BaseUserSerializer
     http_method_names = ['post']
 
-    @extend_schema(request=SwaggerLogin)
+    @extend_schema(request=SwaggerLoginSerializer)
     @extend_schema(description='Autenticação', methods=["POST"])
     def authenticate(self, request, *args, **kwargs):
-        login = request.data['login']
+        rf = request.data['rf']
         password = request.data['password']
-
-        if not (login and password):
+        if not (rf and password):
             return Response({'errors': {'login e senha obrigatórios'}}, status=status.HTTP_401_UNAUTHORIZED)
 
-        user = authenticate(request, login=login, password=password)
-
+        user = authenticate(request, rf=rf, password=password)
         if user:
             refresh = RefreshToken.for_user(user)
             serializer = UserSerializer(user)
@@ -36,6 +32,7 @@ class JWTAuthenticationViewSet(viewsets.GenericViewSet):
             return Response(data, status=status.HTTP_200_OK)
         return Response({'errors': {'login ou senha incorretos'}}, status=status.HTTP_401_UNAUTHORIZED)
 
+    @extend_schema(description='Logout', methods=["POST"])
     def logout(self, request, *args, **kwargs):
         try:
             logout(request)
