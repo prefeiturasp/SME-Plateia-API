@@ -12,3 +12,6 @@ class Inscription(models.Model):
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
+
+    class Meta:
+        managed = False

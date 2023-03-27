@@ -12,6 +12,9 @@ class Comment(models.Model):
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
+    class Meta:
+        managed = False
+
 
 class Genre(models.Model):
     id = models.CharField(db_column='Id', primary_key=True, max_length=36)
@@ -20,6 +23,9 @@ class Genre(models.Model):
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
+    class Meta:
+        managed = False
+
 
 class Genreshowtype(models.Model):
     genreid = models.OneToOneField(Genre, models.DO_NOTHING, db_column='GenreId', primary_key=True)
@@ -27,6 +33,7 @@ class Genreshowtype(models.Model):
 
     class Meta:
         unique_together = (('genreid', 'showtypeid'),)
+        managed = False
 
 
 class File(models.Model):
@@ -40,6 +47,9 @@ class File(models.Model):
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
+
+    class Meta:
+        managed = False
 
 
 class Show(models.Model):
@@ -57,6 +67,9 @@ class Show(models.Model):
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
+    class Meta:
+        managed = False
+
 
 class Showtype(models.Model):
     id = models.CharField(db_column='Id', primary_key=True, max_length=36)
@@ -64,6 +77,9 @@ class Showtype(models.Model):
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
+
+    class Meta:
+        managed = False
 
 
 class Event(models.Model):
@@ -85,6 +101,9 @@ class Event(models.Model):
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
+
+    class Meta:
+        managed = False
 
 
 class Eventhistory(models.Model):
@@ -109,3 +128,4 @@ class Eventhistory(models.Model):
 
     class Meta:
         db_table = '_EventHistory'
+        managed = False

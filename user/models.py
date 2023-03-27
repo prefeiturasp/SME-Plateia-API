@@ -22,6 +22,9 @@ class User(models.Model):
     createdate = models.DateTimeField(db_column='CreateDate', blank=True, null=True)
     updatedate = models.DateTimeField(db_column='UpdateDate', blank=True, null=True)
 
+    class Meta:
+        managed = False
+
     def save(self, *args, **kwargs):
         self.set_password(self.password)
         return super(User, self).save(*args, **kwargs)

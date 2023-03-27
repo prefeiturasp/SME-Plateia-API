@@ -8,6 +8,9 @@ class City(models.Model):
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
+    class Meta:
+        managed = False
+
 
 class Logactivity(models.Model):
     id = models.CharField(db_column='Id', primary_key=True, max_length=36)
@@ -22,6 +25,9 @@ class Logactivity(models.Model):
     identity = models.CharField(db_column='Identity', max_length=250, blank=True, null=True)
     plataform = models.CharField(db_column='Plataform', max_length=250, blank=True, null=True)
     mobiledevicemodel = models.CharField(db_column='MobileDeviceModel', max_length=250, blank=True, null=True)
+
+    class Meta:
+        managed = False
 
 
 class Logerror(models.Model):
@@ -40,6 +46,9 @@ class Logerror(models.Model):
     plataform = models.CharField(db_column='Plataform', max_length=250, blank=True, null=True)
     mobiledevicemodel = models.CharField(db_column='MobileDeviceModel', max_length=250, blank=True, null=True)
 
+    class Meta:
+        managed = False
+
 
 class Parameter(models.Model):
     id = models.CharField(db_column='Id', primary_key=True, max_length=36)
@@ -49,3 +58,6 @@ class Parameter(models.Model):
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
+
+    class Meta:
+        managed = False
