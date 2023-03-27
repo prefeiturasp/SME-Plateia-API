@@ -9,7 +9,7 @@ class User(models.Model):
     id = models.SlugField(db_column='Id', primary_key=True, max_length=36)
     entityid = models.CharField(db_column='EntityId', max_length=36)
     login = models.CharField(db_column='Login', max_length=500, blank=True, null=True)
-    password = models.CharField(db_column="password", max_length=128)
+    password = models.CharField(db_column="Password", max_length=128)
     crypt = models.CharField(db_column='Crypt', max_length=128)
     name = models.CharField(db_column='Name', max_length=200, blank=True, null=True)
     rf = models.CharField(db_column='RF', max_length=25, blank=True, null=True)
