@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 import environ
-from datetime import timedelta
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = (
     environ.Path(__file__) - 3
@@ -189,24 +187,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Rest framework
 # https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
-# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1)
+        'user.auth.CustomJWTAuthentication'
+    ]
 }
 
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-AUTHENTICATION_BACKENDS
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend', # mantém o backend padrão do Django
-    'user.auth.CustomUserBackend', # backend personalizado para autenticação com o campo "login"
+    'django.contrib.auth.backends.ModelBackend',  # mantém o backend padrão do Django
+    'user.auth.CustomUserBackend',  # backend personalizado para autenticação com o campo "login"
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
@@ -243,6 +235,5 @@ LOGGING = {
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Plateia API',
     'DESCRIPTION': 'API para projeto plateia app',
-    'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }

@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
 from .models import User
 
 
@@ -17,8 +16,8 @@ class BaseUserSerializer(serializers.Serializer):
         fields = '__all__'
 
 
-class SwaggerLogin(serializers.Serializer):
-    login = serializers.CharField()
+class SwaggerLoginSerializer(serializers.Serializer):
+    rf = serializers.CharField()
     password = serializers.CharField()
 
     class Meta:
