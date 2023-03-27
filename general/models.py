@@ -9,6 +9,7 @@ class City(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
+        db_table = 'City'
         managed = False
 
 
@@ -27,6 +28,7 @@ class Logactivity(models.Model):
     mobiledevicemodel = models.CharField(db_column='MobileDeviceModel', max_length=250, blank=True, null=True)
 
     class Meta:
+        db_table = 'Logactivity'
         managed = False
 
 
@@ -47,6 +49,7 @@ class Logerror(models.Model):
     mobiledevicemodel = models.CharField(db_column='MobileDeviceModel', max_length=250, blank=True, null=True)
 
     class Meta:
+        db_table = 'Logerror'
         managed = False
 
 
@@ -60,4 +63,5 @@ class Parameter(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
+        db_table = 'Parameter'
         managed = False

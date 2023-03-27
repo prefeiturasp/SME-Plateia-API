@@ -14,4 +14,5 @@ class Inscription(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
+        db_table = 'Inscription'
         managed = False

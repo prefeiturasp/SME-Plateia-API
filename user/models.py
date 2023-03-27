@@ -23,6 +23,7 @@ class User(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate', blank=True, null=True)
 
     class Meta:
+        db_table = 'User'
         managed = False
 
     def save(self, *args, **kwargs):

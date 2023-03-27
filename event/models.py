@@ -13,6 +13,7 @@ class Comment(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
+        db_table = 'Comment'
         managed = False
 
 
@@ -24,6 +25,7 @@ class Genre(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
+        db_table = 'Genre'
         managed = False
 
 
@@ -32,6 +34,7 @@ class Genreshowtype(models.Model):
     showtypeid = models.ForeignKey('Showtype', models.DO_NOTHING, to_field='id', db_column='ShowTypeId')
 
     class Meta:
+        db_table = 'Genreshowtype'
         unique_together = (('genreid', 'showtypeid'),)
         managed = False
 
@@ -49,6 +52,7 @@ class File(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
+        db_table = 'File'
         managed = False
 
 
@@ -68,6 +72,7 @@ class Show(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
+        db_table = 'Show'
         managed = False
 
 
@@ -79,6 +84,7 @@ class Showtype(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
+        db_table = 'ShowType'
         managed = False
 
 
@@ -103,6 +109,7 @@ class Event(models.Model):
     updatedate = models.DateTimeField(db_column='UpdateDate')
 
     class Meta:
+        db_table = 'Event'
         managed = False
 
 
