@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import (
 
 
 class User(models.Model):
-    id = models.SlugField(db_column='Id', primary_key=True, max_length=36)
+    id = models.CharField(db_column='Id', primary_key=True, max_length=36)
     entityid = models.CharField(db_column='EntityId', max_length=36)
     login = models.CharField(db_column='Login', max_length=500, blank=True, null=True)
     password = models.CharField(db_column="Password", max_length=128)

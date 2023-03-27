@@ -4,9 +4,9 @@ from user.models import User
 
 
 class Comment(models.Model):
-    id = models.CharField(db_column='Id', primary_key=True, max_length=36)
+    id = models.BigAutoField(db_column='Id', primary_key=True)
     userid = models.ForeignKey(User, models.DO_NOTHING, to_field='id', db_column='UserId')
-    showid = models.ForeignKey('Show', models.DO_NOTHING, to_field='id', db_column='ShowId')
+    showid = models.ForeignKey('Show', models.DO_NOTHING, db_column='ShowId')
     content = models.CharField(db_column='Content', max_length=500)
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
@@ -18,7 +18,7 @@ class Comment(models.Model):
 
 
 class Genre(models.Model):
-    id = models.CharField(db_column='Id', primary_key=True, max_length=36)
+    id = models.BigAutoField(db_column='Id', primary_key=True)
     name = models.CharField(db_column='Name', max_length=150)
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
@@ -34,19 +34,19 @@ class Genreshowtype(models.Model):
     showtypeid = models.ForeignKey('Showtype', models.DO_NOTHING, to_field='id', db_column='ShowTypeId')
 
     class Meta:
-        db_table = 'Genreshowtype'
+        db_table = 'GenreShowType'
         unique_together = (('genreid', 'showtypeid'),)
         managed = False
 
 
 class File(models.Model):
-    id = models.CharField(db_column='Id', primary_key=True, max_length=36)
+    id = models.BigAutoField(db_column='Id', primary_key=True)
     name = models.CharField(db_column='Name', max_length=300)
     length = models.IntegerField(db_column='Length')
     path = models.TextField(db_column='Path')
     thumbnailpath = models.TextField(db_column='ThumbnailPath', blank=True, null=True)
     extension = models.TextField(db_column='Extension', blank=True, null=True)
-    showid = models.ForeignKey('Show', models.DO_NOTHING, to_field='id', db_column='ShowId')
+    showid = models.ForeignKey('Show', models.DO_NOTHING, db_column='ShowId')
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
     updatedate = models.DateTimeField(db_column='UpdateDate')
@@ -57,7 +57,7 @@ class File(models.Model):
 
 
 class Show(models.Model):
-    id = models.CharField(db_column='Id', primary_key=True, max_length=36)
+    id = models.BigAutoField(db_column='Id', primary_key=True)
     name = models.CharField(db_column='Name', max_length=150)
     synopsis = models.CharField(db_column='Synopsis', max_length=1500)
     classification = models.CharField(db_column='Classification', max_length=150, blank=True, null=True)
@@ -77,7 +77,7 @@ class Show(models.Model):
 
 
 class Showtype(models.Model):
-    id = models.CharField(db_column='Id', primary_key=True, max_length=36)
+    id = models.BigAutoField(db_column='Id', primary_key=True)
     name = models.CharField(db_column='Name', max_length=150)
     state = models.SmallIntegerField(db_column='State')
     createdate = models.DateTimeField(db_column='CreateDate')
@@ -89,7 +89,7 @@ class Showtype(models.Model):
 
 
 class Event(models.Model):
-    id = models.CharField(db_column='Id', primary_key=True, max_length=36)
+    id = models.BigAutoField(db_column='Id', primary_key=True)
     showid = models.ForeignKey('Show', models.DO_NOTHING, to_field='id', db_column='ShowId')
     cityid = models.ForeignKey(City, models.DO_NOTHING, to_field='id', db_column='CityId')
     local = models.CharField(db_column='Local', max_length=300)
@@ -114,7 +114,7 @@ class Event(models.Model):
 
 
 class Eventhistory(models.Model):
-    id = models.CharField(db_column='Id', primary_key=True, max_length=36)
+    id = models.BigAutoField(db_column='Id', primary_key=True)
     showid = models.BigIntegerField(db_column='ShowId', blank=True, null=True)
     cityid = models.CharField(db_column='CityId', max_length=36, blank=True, null=True)
     local = models.CharField(db_column='Local', max_length=300, blank=True, null=True)
