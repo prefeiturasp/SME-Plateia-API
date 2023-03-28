@@ -1,4 +1,5 @@
 import hashlib
+import base64
 from django.contrib.auth.hashers import BasePasswordHasher
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import AnonymousUser
@@ -69,17 +70,19 @@ class isAuthenticated(permissions.BasePermission):
 class PBKDF2SHA512PasswordHasher(BasePasswordHasher):
     algorithm = "sha512"
 
-    def encode(self, password, salt):
-        assert salt is None, "Salt is not used for this hash"
-        password = password.encode("utf-8")
-        hash_obj = hashlib.sha512()
-        hash_obj.update(password)
-        encoded = hash_obj.digest()
-        return encoded.decode("latin1")
-
     def verify(self, password, encoded):
-        encoded_2 = self.encode(password, None)
+        encoded_2 = self.encode(password)
         return encoded == encoded_2
+
+    def encode(self, senha):
+        try:
+            senhaByte = senha.encode('utf-8')
+            sha512 = hashlib.sha512()
+            sha512.update(senhaByte)
+            pwd = base64.b64encode(sha512.digest()).decode()
+            return pwd.lstrip('/')
+        except Exception as e:
+            raise ValueError(e)
 
     def safe_summary(self, encoded):
         return {'algorithm': self.algorithm}
