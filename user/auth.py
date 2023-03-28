@@ -66,7 +66,7 @@ class isAuthenticated(permissions.BasePermission):
             return True
 
 
-class SHA512PasswordHasher(BasePasswordHasher):
+class PBKDF2SHA512PasswordHasher(BasePasswordHasher):
     algorithm = "sha512"
 
     def encode(self, password, salt):
