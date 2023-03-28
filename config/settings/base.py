@@ -239,4 +239,4 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-PASSWORD_HASHERS = ['user.auth.SHA512PasswordHasher',]
+PASSWORD_HASHERS = ['django.contrib.auth.hashers.SHA512PasswordHasher',]
