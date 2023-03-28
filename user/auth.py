@@ -1,3 +1,6 @@
+import base64
+import hashlib
+from django.contrib.auth.hashers import BasePasswordHasher
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import AnonymousUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -62,3 +65,24 @@ class isAuthenticated(permissions.BasePermission):
             return False
         if request.user:
             return True
+
+
+class SHA512PasswordHasher(BasePasswordHasher):
+    algorithm = "sha512"
+
+    def criptografar_senha_sha512(senha):
+        senha_byte = senha.encode('utf-16le')
+        sha512 = hashlib.sha512()
+        sha512.update(senha_byte)
+        senha_criptografada = sha512.digest()
+        senha_base64 = base64.b64encode(senha_criptografada).decode('utf-8')
+        return senha_base64.strip('/')
+
+    def encode(self, senha, salt):
+        return self.criptografar_senha_sha512(senha)
+
+    def verify(self, senha, criptografada):
+        return criptografada == self.encode(senha, '')
+
+    def safe_summary(self, criptografada):
+        return {'description': self.algorithm}

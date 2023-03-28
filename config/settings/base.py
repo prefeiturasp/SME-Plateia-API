@@ -237,3 +237,6 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API para projeto plateia app',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+
+PASSWORD_HASHERS = ['user.auth.SHA512PasswordHasher',]
