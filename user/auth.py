@@ -17,7 +17,8 @@ class CustomUserBackend(BaseBackend):
         except User.DoesNotExist:
             return None
 
-        if user.check_password(password):
+        hash = PBKDF2SHA512PasswordHasher()
+        if hash.verify(password, user.password):
             return user
 
         return None
