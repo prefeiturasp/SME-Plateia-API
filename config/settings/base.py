@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
 import os
 import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -191,13 +190,16 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'user.auth.CustomJWTAuthentication'
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
 }
 
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-AUTHENTICATION_BACKENDS
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',  # mantém o backend padrão do Django
+    # 'django.contrib.auth.backends.ModelBackend',  # mantém o backend padrão do Django
+    'user.auth.CustomAuthBackend',
     'user.auth.CustomUserBackend',  # backend personalizado para autenticação com o campo "login"
 ]
 
@@ -236,7 +238,7 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Plateia API',
     'DESCRIPTION': 'API para projeto plateia app',
     'SERVE_INCLUDE_SCHEMA': False,
+    'CACHE_ENABLED': False,
 }
-
 
 PASSWORD_HASHERS = ['user.auth.PBKDF2SHA512PasswordHasher',]

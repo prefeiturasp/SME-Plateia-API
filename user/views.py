@@ -14,7 +14,7 @@ class JWTAuthenticationViewSet(viewsets.ModelViewSet):
     authentication_classes = ()
     permission_classes = [AllowAny,]
 
-    @extend_schema(request=SwaggerLoginSerializer)
+    @extend_schema(request=SwaggerLoginSerializer,)
     @extend_schema(description='Autenticação', methods=["POST"])
     def authenticate(self, request, *args, **kwargs):
         rf = request.data['rf']
