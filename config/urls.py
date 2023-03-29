@@ -6,6 +6,7 @@ from rest_framework import routers
 
 from user import urls as user_urls
 from inscription import urls as inscription_urls
+from event import urls as event_urls
 
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -16,7 +17,8 @@ from drf_spectacular.views import (
 router = routers.DefaultRouter()
 
 routeLists = [
-    inscription_urls.routeList
+    # inscription_urls.routeList,
+    event_urls.routeList
 ]
 
 for routeList in routeLists:
