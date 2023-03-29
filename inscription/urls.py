@@ -1,8 +1,7 @@
-from django.urls import path
 from .views import InscriptionsViewSet
 
-app_name = "inscription"
+app_name = "inscricao"
 
 routeList = (
-    (r'inscription', InscriptionsViewSet),
+    (r'inscricao', InscriptionsViewSet),
 )

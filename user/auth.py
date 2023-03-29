@@ -3,10 +3,13 @@ import base64
 from django.contrib.auth.hashers import BasePasswordHasher
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.hashers import is_password_usable, get_hasher
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework import permissions
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth import get_user_model
 from .models import User
 
 
@@ -24,22 +27,19 @@ class CustomUserBackend(BaseBackend):
         return None
 
 
+class CustomAuthBackend(ModelBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        UserModel = get_user_model()
+        try:
+            user = UserModel.objects.get(username=username)
+            hash = PBKDF2SHA512PasswordHasher()
+            if hash.verify(password, user.password):
+                return user
+        except UserModel.DoesNotExist:
+            return None
+
+
 class CustomJWTAuthentication(JWTAuthentication):
-
-    def authenticate(self, request):
-        header = self.get_header(request)
-
-        if header is None:
-            return None
-
-        raw_token = self.get_raw_token(header)
-
-        if raw_token is None:
-            return None
-
-        validated_token = self.get_validated_token(raw_token)
-
-        return self.get_user(validated_token), validated_token
 
     def get_user(self, validated_token):
         """
@@ -75,7 +75,7 @@ class PBKDF2SHA512PasswordHasher(BasePasswordHasher):
         encoded_2 = self.encode(password)
         return encoded == encoded_2
 
-    def encode(self, senha):
+    def encode(self, senha, salt=None):
         try:
             senhaByte = senha.encode('utf-8')
             sha512 = hashlib.sha512()
