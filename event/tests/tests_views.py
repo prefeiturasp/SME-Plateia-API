@@ -69,3 +69,26 @@ class EventosUsuarioViewSetTestCase(TestCase):
         serializer = EventDetailSerializer(self.user_events.first())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
+
+
+class LocaisEventosUsuarioViewSetTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.url_base = '/api/v1/locais_meus_eventos'
+
+        # Busca e autentica usuário existente.
+        self.user = User.objects.get(rf='1845721')
+        self.client.force_authenticate(user=self.user)
+
+        # Eventos do usuário autenticado
+        self.user_events = Event.objects.filter(inscription__userid=self.user).order_by('-schedule')
+
+    def test_list(self):
+        termo = 'Teatro'
+        response = self.client.get(self.url_base + '?termo={}'.format(termo))
+
+        locations = self.user_events.filter(local__icontains=termo).values_list('local', flat=True).distinct()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), locations.count())
