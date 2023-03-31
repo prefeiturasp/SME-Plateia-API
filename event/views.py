@@ -1,6 +1,7 @@
 from django.db.models import Q
+from django.db.models.functions import Lower
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import ValidationError, NotFound, ParseError
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -8,14 +9,14 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from .models import Event
 from .serializers import EventSerializer, EventDetailSerializer
 from user.auth import CustomJWTAuthentication, isAuthenticated
-from .swagger import get_user_events_list_scheme, get_user_events_retrieve_scheme
+from .swagger import get_user_events_list_scheme, get_user_events_retrieve_scheme, get_locais_eventos_usuario_list_scheme
 
 
 @extend_schema_view(
     list=extend_schema(**get_user_events_list_scheme()),
     retrieve=extend_schema(**get_user_events_retrieve_scheme())
 )
-class UserEventsViewSetViewSet(viewsets.ModelViewSet):
+class EventosUsuarioViewSetViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
     authentication_classes = (CustomJWTAuthentication,)
@@ -58,3 +59,25 @@ class UserEventsViewSetViewSet(viewsets.ModelViewSet):
 
         serializer = EventDetailSerializer(instance)
         return Response(serializer.data)
+
+
+@extend_schema(**get_locais_eventos_usuario_list_scheme())
+class LocaisEventosUsuarioViewSetViewSet(viewsets.GenericViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventDetailSerializer
+    authentication_classes = (CustomJWTAuthentication,)
+    permission_classes = [isAuthenticated]
+
+    def list(self, request):
+        termo = request.GET.get('termo')
+
+        if not termo:
+            raise ValidationError({'detail': 'Campo `termo` é obrigatório.'})
+
+        if len(termo) < 3:
+            raise ValidationError({'detail': 'Termo deve conter pelo menos 3 caracteres.'})
+
+        locations = Event.objects.filter(inscription__userid=request.user,
+                                         local__icontains=termo).values_list('local', flat=True)
+
+        return Response(locations)

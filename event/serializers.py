@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Event, Show, Showtype, Genre, File
-
 from general.serializers import CitySerializer
 
 

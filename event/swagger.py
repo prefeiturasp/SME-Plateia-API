@@ -4,6 +4,7 @@ from .serializers import EventSerializer
 
 def get_user_events_list_scheme():
     return {
+        'description': 'Busca meus eventos.',
         'request': {
             'headers': {
                 'Authorization': 'Bearer <access_token>'
@@ -110,6 +111,7 @@ def get_user_events_list_scheme():
 
 def get_user_events_retrieve_scheme():
     return {
+        'description': 'Busca evento por ID.',
         'request': {
             'headers': {
                 'Authorization': 'Bearer <access_token>'
@@ -217,4 +219,14 @@ def get_user_events_retrieve_scheme():
                 ]
             ),
         },
+    }
+
+
+def get_locais_eventos_usuario_list_scheme():
+    return {
+        'parameters': [
+            OpenApiParameter(name='termo', description='Termo de pesquisa', required=True, type=OpenApiTypes.STR),
+        ],
+        'description': 'Listagem de locais dos eventos de um usuário para autocomplete mediante entrada de algum termo de pesquisa.'
+
     }
