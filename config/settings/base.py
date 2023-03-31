@@ -119,14 +119,6 @@ DATABASES = {
         'HOST': env('POSTGRES_HOST'),
         'PORT': env('POSTGRES_PORT'),
     },
-    # 'test': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'test_db_plateia2',
-    #     'USER': 'postgres',
-    #     'PASSWORD': '1234',
-    #     'HOST': 'locahost',
-    #     'PORT': env('POSTGRES_PORT'),
-    # }
 }
 
 
