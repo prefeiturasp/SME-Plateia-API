@@ -9,6 +9,12 @@ class FileSerializer(serializers.ModelSerializer):
         model = File
         fields = '__all__'
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['path'] = '' if instance.path == "" or instance.path is None else File.get_full_file_path(instance.path)
+        response['thumbnailpath'] = '' if instance.thumbnailpath == "" or instance.thumbnailpath is None else File.get_full_file_path(instance.thumbnailpath)
+        return response
+
 
 class GenreSerializer(serializers.ModelSerializer):
 

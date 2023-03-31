@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.db.models import Q
 from general.models import City
 from user.models import User
@@ -55,6 +56,10 @@ class File(models.Model):
     class Meta:
         db_table = 'File'
         managed = False
+
+    @staticmethod
+    def get_full_file_path(path: str):
+        return settings.BASE_MEDIA_EXTERNAL_PATH + path
 
 
 class Show(models.Model):
