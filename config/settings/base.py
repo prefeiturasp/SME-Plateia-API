@@ -241,4 +241,11 @@ SPECTACULAR_SETTINGS = {
     'CACHE_ENABLED': False,
 }
 
+# https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-PASSWORD_HASHERS
+
 PASSWORD_HASHERS = ['user.auth.PBKDF2SHA512PasswordHasher',]
+
+BASE_MEDIA_EXTERNAL_PATH = env(
+    "DJANGO_BASE_PATH_EXTERNAL_MEDIA",
+    default="https://plateia.sme.prefeitura.sp.gov.br",
+)
