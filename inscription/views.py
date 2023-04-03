@@ -3,11 +3,14 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
+from drf_spectacular.utils import extend_schema
+
 from user.auth import CustomJWTAuthentication, isAuthenticated
 
 from .models import Inscription
 from .serializers import InscriptionSerializer
-from .utils import QRCode_generate
+from .utils import QRCode_generate, generate_ticket_voucher
+from .swagger import get_retrieve_voucher_scheme,  get_pdf_scheme
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +22,7 @@ class InscricaoVoucherViewSet(viewsets.GenericViewSet):
     permission_classes = [isAuthenticated]
     http_method_names = ['get']
 
+    @extend_schema(**get_retrieve_voucher_scheme())
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
 
@@ -28,7 +32,7 @@ class InscricaoVoucherViewSet(viewsets.GenericViewSet):
         try:
             ticket_dict = instance.get_ticket_dict()
             ticket_str = instance.ticket_to_string(ticket_dict)
-            qrcode = QRCode_generate(200, 200, ticket_str)
+            qrcode = QRCode_generate(ticket_str)
 
             if not qrcode:
                 raise ValidationError(detail='Não foi possível gerar QRcode')
@@ -43,3 +47,40 @@ class InscricaoVoucherViewSet(viewsets.GenericViewSet):
             raise Exception(e)
 
         return Response(ticket_dict)
+
+    @extend_schema(**get_pdf_scheme())
+    def pdf(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if not (instance.userid.id == request.user.id):
+            raise PermissionDenied()
+
+        try:
+            ticket_dict = instance.get_ticket_dict()
+            ticket_str = instance.ticket_to_string(ticket_dict)
+            qrcode = QRCode_generate(ticket_str)
+
+            if not qrcode:
+                raise ValidationError(detail='Não foi possível gerar QRcode')
+
+            ticket_dict['qrcode'] = qrcode
+
+        except Exception as e:
+            erro = {
+                'caminho': 'InscricaoVoucherViewSet > pdf',
+                'mensagem': str(e)
+            }
+            logger.error('Erro: %r', erro)
+            raise Exception(e)
+
+        try:
+            pdf = generate_ticket_voucher(ticket_dict)
+        except Exception as e:
+            erro = {
+                'caminho': 'InscricaoVoucherViewSet > pdf',
+                'mensagem': str(e)
+            }
+            logger.error('Erro: %r', erro)
+            raise Exception(e)
+
+        return Response({'voucher': pdf})

@@ -2,35 +2,43 @@ import logging
 import base64
 import qrcode
 from io import BytesIO
+from django.template.loader import render_to_string
+from django.conf import settings
+from weasyprint import HTML
 
 logger = logging.getLogger(__name__)
 
 
+def generate_ticket_voucher(ticket_dict):
+    html_string = render_to_string('voucher.html', {'ticket': ticket_dict, 'STATIC_URL': settings.BASE_STATIC_PATH})
+
+    buffer = BytesIO()
+
+    HTML(string=html_string).write_pdf(buffer)
+
+    buffer.seek(0)
+    base64_pdf = base64.b64encode(buffer.getvalue()).decode()
+
+    return f"data:application/pdf;base64,{base64_pdf}"
+
+
 def dia_da_semana(data):
-    # Converter a string de entrada para um objeto datetime.date
     data_obj = data.date()
-
-    # Definir os nomes dos dias da semana
     dias_da_semana = ['segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado', 'domingo']
-
-    # Obter o índice do dia da semana (0 = segunda-feira, 1 = terça-feira, etc.)
     dia_da_semana_idx = data_obj.weekday()
-
-    # Retornar o nome do dia da semana correspondente
-    # return dias_da_semana[dia_da_semana_idx]
 
     return dias_da_semana[dia_da_semana_idx]
 
 
-def QRCode_generate(width, height, text):
+def QRCode_generate(text):
     try:
-        qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_Q)
+        qr = qrcode.QRCode(version=None, box_size=20, border=1, error_correction=qrcode.constants.ERROR_CORRECT_Q)
         qr.add_data(text)
         qr.make()
-        img = qr.make_image(fill_color="black", back_color="white").resize((width, height))
+        img = qr.make_image(fill_color="black", back_color="white")
 
         with BytesIO() as output:
-            img.save(output, format='BMP')
+            img.save(output)
             arr = output.getvalue()
 
         return f"data:image/png;base64,{base64.b64encode(arr).decode('utf-8')}"
@@ -41,3 +49,11 @@ def QRCode_generate(width, height, text):
         }
         logger.error('Erro: %r', erro)
         return None
+
+
+def is_base64(s):
+    try:
+        base64.decodebytes(s.encode('utf-8'))
+        return True
+    except TypeError:
+        return False

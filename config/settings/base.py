@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+from datetime import timedelta
 import os
 import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -165,11 +166,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 STATIC_ROOT = str(BASE_DIR('staticfiles'))
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = '/django_static/'
+STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
     str(BASE_DIR.path('static')),
 ]
+
+DOMAIN_URL = env("DJANGO_DOMAIN_URL")
+BASE_STATIC_PATH = DOMAIN_URL + STATIC_URL
 
 # MEDIA
 # ------------------------------------------------------------------------------
@@ -245,6 +249,7 @@ SPECTACULAR_SETTINGS = {
 
 PASSWORD_HASHERS = ['user.auth.PBKDF2SHA512PasswordHasher',]
 
+# Arquivos existentes estão na base do projeto legado.
 BASE_MEDIA_EXTERNAL_PATH = env(
     "DJANGO_BASE_PATH_EXTERNAL_MEDIA",
     default="https://plateia.sme.prefeitura.sp.gov.br",
