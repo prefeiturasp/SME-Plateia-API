@@ -1,16 +1,14 @@
-from datetime import datetime
 import logging
-from django.db.models import Q
-from django.db.models.functions import Lower
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import ValidationError, NotFound, ParseError
 from drf_spectacular.utils import extend_schema, extend_schema_view
 
+from user.auth import CustomJWTAuthentication, isAuthenticated
+
 from .models import Event
 from .serializers import EventSerializer, EventDetailSerializer
-from user.auth import CustomJWTAuthentication, isAuthenticated
 from .swagger import get_user_events_list_scheme, get_user_events_retrieve_scheme, get_locais_eventos_usuario_list_scheme
 
 logger = logging.getLogger(__name__)
@@ -34,22 +32,22 @@ class EventosUsuarioViewSet(viewsets.ModelViewSet):
         period_end = request.GET.get('periodo_fim')
         local = request.GET.get('local')
 
-        self.queryset = Event.objects.filter(inscription__userid=request.user).order_by('-schedule')
+        queryset = Event.objects.filter(inscription__userid__id=request.user.id).order_by('-schedule')
 
         try:
             try:
                 if period_init and period_end:
-                    # Foi necessário utilizar raw na queryset para tornar a busca com datas compatível com o banco SQL SERVER.
-                    self.queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, period_end, previous_queryset=self.queryset)
+                    # Foi necessário utilizar raw query para tornar a busca com datas compatível com o banco SQL SERVER.
+                    queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, period_end, previous_queryset=queryset)
             except ValueError as e:
                 raise ParseError(detail=e)
 
             if name:
-                self.queryset = self.queryset.filter(showid__name__contains=name)
+                queryset = queryset.filter(showid__name__contains=name)
             if local:
-                self.queryset = self.queryset.filter(local__contains=local)
+                queryset = queryset.filter(local__contains=local)
 
-            page = self.paginate_queryset(self.queryset)
+            page = self.paginate_queryset(queryset)
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 

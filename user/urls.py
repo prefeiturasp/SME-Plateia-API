@@ -7,9 +7,9 @@ from .views import JWTAuthenticationViewSet
 app_name = "autenticacao"
 
 urlpatterns = [
-    path('entrar', JWTAuthenticationViewSet.as_view(
+    path('autenticacao/entrar', JWTAuthenticationViewSet.as_view(
         {'post': 'authenticate'}), name="entrar"),
-    path('sair', JWTAuthenticationViewSet.as_view(
+    path('autenticacao/sair', JWTAuthenticationViewSet.as_view(
         {'post': 'logout'}), name="sair"),
-    path('token/atualizar/', TokenRefreshView.as_view(), name='token_atualizar'),
+    path('autenticacao/token/atualizar/', TokenRefreshView.as_view(), name='token_atualizar'),
 ]
