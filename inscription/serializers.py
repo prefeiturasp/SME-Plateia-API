@@ -3,7 +3,7 @@ from .models import Inscription
 from event.serializers import EventSerializer
 
 
-class InscriptionsSerializer(serializers.ModelSerializer):
+class InscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Inscription
@@ -11,6 +11,6 @@ class InscriptionsSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['eventid'] = '' if instance.eventid == "" or instance.eventid == None else EventSerializer(
+        response['eventid'] = '' if instance.eventid == "" or instance.eventid is None else EventSerializer(
             instance.eventid).data
         return response

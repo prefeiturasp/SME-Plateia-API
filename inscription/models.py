@@ -16,3 +16,16 @@ class Inscription(models.Model):
     class Meta:
         db_table = 'Inscription'
         managed = False
+
+
+# def ticket_to_string(ticket):
+#     return f'N°: {ticket.InscriptionId}\n' \
+#            f'Servidor: {ticket.Name}\n' \
+#            f'RF: {ticket.RF}\n' \
+#            f'Evento: {ticket.EventName}\n' \
+#            f'Data: {ticket.PresentationDate.strftime("%d/%m/%Y")} - {ticket.DayOfWeek}\n' \
+#            f'Horário: {ticket.Schedule.strftime("%H:%M")}\n' \
+#            f'Local: {ticket.Local}\n' \
+#            f'Endereço: {ticket.Address}\n' \
+#            f'Categoria: {ticket.ShowType}\n' \
+#            f'Vale {ticket.TicketByMember} ingresso(s)'
