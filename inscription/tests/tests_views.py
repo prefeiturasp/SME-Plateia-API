@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from unittest import TestCase
 from user.models import User
+from inscription.utils import is_base64
 
 
 class InscricaoVoucherViewSetTestCase(TestCase):
@@ -18,3 +19,10 @@ class InscricaoVoucherViewSetTestCase(TestCase):
         id = '41584'
         response = self.client.get(self.url_base + '/{}/voucher'.format(id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_pdf(self):
+        id = '41584'
+        response = self.client.get(self.url_base + '/{}/voucher/pdf'.format(id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue('voucher' in response.data)
+        self.assertTrue(is_base64(response.data['voucher']))
