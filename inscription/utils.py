@@ -14,7 +14,7 @@ def generate_ticket_voucher(ticket_dict):
 
     buffer = BytesIO()
 
-    HTML(string=html_string).write_pdf(buffer)
+    HTML(string=html_string).write_pdf(buffer, font_config='/etc/fonts/fonts.conf')
 
     buffer.seek(0)
     base64_pdf = base64.b64encode(buffer.getvalue()).decode()
