@@ -5,6 +5,9 @@ from io import BytesIO
 from django.template.loader import render_to_string
 from django.conf import settings
 from weasyprint import HTML
+from weasyprint.text.fonts import FontConfiguration
+
+font_config = FontConfiguration()
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +17,7 @@ def generate_ticket_voucher(ticket_dict):
 
     buffer = BytesIO()
 
-    HTML(string=html_string).write_pdf(buffer, font_config='/etc/fonts/fonts.conf')
+    HTML(string=html_string).write_pdf(buffer, font_config=font_config)
 
     buffer.seek(0)
     base64_pdf = base64.b64encode(buffer.getvalue()).decode()
