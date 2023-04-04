@@ -7,6 +7,6 @@ RUN apk update && \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     pip cache purge && \
-    apk del postgresql-dev gcc musl-dev glib-dev
+    apk del postgresql-dev gcc musl-dev
 
 EXPOSE 8001
