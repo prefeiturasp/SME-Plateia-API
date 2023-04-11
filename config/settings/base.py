@@ -254,3 +254,9 @@ BASE_MEDIA_EXTERNAL_PATH = env(
     "DJANGO_BASE_PATH_EXTERNAL_MEDIA",
     default="https://plateia.sme.prefeitura.sp.gov.br",
 )
+
+# TODO REMOVER Configuração temporária
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1)
+}
