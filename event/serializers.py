@@ -73,6 +73,7 @@ class EventDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def to_representation(self, instance):
+        # TODO retornar inscricao do usuário logado
         response = super().to_representation(instance)
         response['showid'] = '' if instance.showid == "" or instance.showid is None else ShowSerializer(
             instance.showid).data
