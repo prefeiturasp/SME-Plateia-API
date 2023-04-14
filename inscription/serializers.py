@@ -17,14 +17,14 @@ class InscriptionSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.Serializer):
-    inscricao_id = serializers.IntegerField()
+    inscricao_id = serializers.CharField()
     nome = serializers.CharField()
     rf = serializers.CharField()
     evento = serializers.CharField()
-    data = serializers.DateTimeField()
-    horario = serializers.TimeField()
+    data = serializers.CharField()
+    horario = serializers.CharField()
     local = serializers.CharField()
     endereco = serializers.CharField()
     categoria = serializers.CharField()
-    ingressos_por_membro = serializers.IntegerField()
+    ingressos_por_membro = serializers.CharField()
     qrcode = serializers.CharField()
