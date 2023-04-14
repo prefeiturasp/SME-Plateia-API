@@ -47,10 +47,6 @@ class EventosUsuarioViewSet(viewsets.ModelViewSet):
             if local:
                 queryset = queryset.filter(local__contains=local)
 
-            page = self.paginate_queryset(queryset)
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
         except Exception as e:
             erro = {
                 'caminho': 'EventosUsuarioViewSet > list',
@@ -58,6 +54,10 @@ class EventosUsuarioViewSet(viewsets.ModelViewSet):
             }
             logger.error('Erro: %r', erro)
             raise Exception(e)
+
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

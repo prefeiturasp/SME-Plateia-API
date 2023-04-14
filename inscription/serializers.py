@@ -14,3 +14,17 @@ class InscriptionSerializer(serializers.ModelSerializer):
         response['eventid'] = '' if instance.eventid == "" or instance.eventid is None else EventSerializer(
             instance.eventid).data
         return response
+
+
+class TicketSerializer(serializers.Serializer):
+    inscricao_id = serializers.IntegerField()
+    nome = serializers.CharField()
+    rf = serializers.CharField()
+    evento = serializers.CharField()
+    data = serializers.DateTimeField()
+    horario = serializers.TimeField()
+    local = serializers.CharField()
+    endereco = serializers.CharField()
+    categoria = serializers.CharField()
+    ingressos_por_membro = serializers.IntegerField()
+    qrcode = serializers.CharField()
