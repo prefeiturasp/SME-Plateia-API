@@ -69,7 +69,7 @@ class EventosUsuarioViewSet(viewsets.ModelViewSet):
         except Exception as e:
             raise ValidationError(detail=e)
 
-        serializer = EventDetailSerializer(instance)
+        serializer = EventDetailSerializer(instance, context={'request': request})
         return Response(serializer.data)
 
 
