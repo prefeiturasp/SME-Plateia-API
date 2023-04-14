@@ -13,16 +13,24 @@ logger = logging.getLogger(__name__)
 
 
 def generate_ticket_voucher(ticket_dict):
-    html_string = render_to_string('voucher.html', {'ticket': ticket_dict, 'STATIC_URL': settings.BASE_STATIC_PATH})
+    try:
+        html_string = render_to_string('voucher.html', {'ticket': ticket_dict, 'STATIC_URL': settings.BASE_STATIC_PATH})
 
-    buffer = BytesIO()
+        buffer = BytesIO()
 
-    HTML(string=html_string).write_pdf(buffer, font_config=font_config)
+        HTML(string=html_string).write_pdf(buffer, font_config=font_config)
 
-    buffer.seek(0)
-    base64_pdf = base64.b64encode(buffer.getvalue()).decode()
+        buffer.seek(0)
+        base64_pdf = base64.b64encode(buffer.getvalue()).decode()
 
-    return f"data:application/pdf;base64,{base64_pdf}"
+        return f"data:application/pdf;base64,{base64_pdf}"
+    except Exception as e:
+        erro = {
+            'caminho': 'inscription > utils > generate_ticket_voucher',
+            'mensagem': str(e)
+        }
+        logger.error('Erro: %r', erro)
+        return None
 
 
 def dia_da_semana(data):
