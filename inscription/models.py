@@ -18,6 +18,21 @@ class Inscription(models.Model):
         db_table = 'Inscription'
         managed = False
 
+    def get_ticket_dict_raw(self):
+        ticket = {
+            'inscricao_id': self.id,
+            'nome': self.userid.name,
+            'rf': self.userid.rf,
+            'evento':  self.eventid.showid.name,
+            'data': self.eventid.presentationdate,
+            'horario': self.eventid.schedule.time(),
+            'local': self.eventid.local,
+            'endereco': self.eventid.address,
+            'categoria': self.eventid.showid.showtypeid.name,
+            'ingressos_por_membro': self.eventid.ticketbymember
+        }
+        return ticket
+
     def get_ticket_dict(self):
         ticket = {
             'inscricao_id': str(self.id),

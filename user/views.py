@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, logout
-
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema
@@ -17,10 +17,11 @@ class JWTAuthenticationViewSet(viewsets.ModelViewSet):
     @extend_schema(request=SwaggerLoginSerializer,)
     @extend_schema(description='Autenticação', methods=["POST"])
     def authenticate(self, request, *args, **kwargs):
-        rf = request.data['rf']
-        password = request.data['password']
+        rf = request.data.get('rf')
+        password = request.data.get('password')
+
         if not (rf and password):
-            return Response({'errors': {'login e senha obrigatórios'}}, status=status.HTTP_401_UNAUTHORIZED)
+            raise ValidationError(detail='login e senha obrigatórios')
 
         user = authenticate(request, rf=rf, password=password)
         if user:
@@ -33,12 +34,15 @@ class JWTAuthenticationViewSet(viewsets.ModelViewSet):
                 'user': serializer.data
             }
             return Response(data, status=status.HTTP_200_OK)
-        return Response({'errors': {'login ou senha incorretos'}}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            raise AuthenticationFailed(detail='Credenciais de autenticação incorretas.')
 
     @extend_schema(description='Logout', methods=["POST"])
     def logout(self, request, *args, **kwargs):
         try:
             logout(request)
             return Response(status=status.HTTP_200_OK)
+        except (AttributeError, KeyError):
+            return Response({'detail': 'Não existe sessão ativa para fazer logout.'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Houve um erro ao realizar logout: {}'.format(str(e))}, status=status.HTTP_400_BAD_REQUEST)
