@@ -17,7 +17,7 @@ class InscriptionSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.Serializer):
-    inscricao_id = serializers.CharField()
+    inscricao_id = serializers.IntegerField()
     nome = serializers.CharField()
     rf = serializers.CharField()
     evento = serializers.CharField()
