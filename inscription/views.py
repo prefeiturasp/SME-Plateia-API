@@ -43,7 +43,7 @@ class InscricaoVoucherViewSet(viewsets.GenericViewSet):
             raise ValidationError(detail='Não foi possível retornar voucher')
 
         ticket_dict['voucher'] = pdf
-        ticket_dict['inscricao_id'] = instance.id
+
         serializer = TicketSerializer(data=ticket_dict)
 
         serializer.is_valid(raise_exception=True)
