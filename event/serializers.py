@@ -78,6 +78,7 @@ class EventDetailSerializer(serializers.ModelSerializer):
 
         response = super().to_representation(instance)
         response['inscriptionid'] = '' if not inscription.exists() else inscription.first().id
+        response['inscriptiondate'] = '' if not inscription.exists() else inscription.first().createdate
         response['showid'] = '' if instance.showid == "" or instance.showid is None else ShowSerializer(
             instance.showid).data
         response['cityid'] = '' if instance.cityid == "" or instance.cityid is None else CitySerializer(

@@ -28,3 +28,4 @@ class TicketSerializer(serializers.Serializer):
     categoria = serializers.CharField()
     ingressos_por_membro = serializers.CharField()
     qrcode = serializers.CharField()
+    voucher = serializers.CharField()
