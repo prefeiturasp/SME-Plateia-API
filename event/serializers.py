@@ -73,8 +73,12 @@ class EventDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def to_representation(self, instance):
-        # TODO retornar inscricao do usuário logado
+        user = self.context['request'].user
+        inscription = instance.inscription_set.filter(userid=user)
+
         response = super().to_representation(instance)
+        response['inscriptionid'] = '' if not inscription.exists() else inscription.first().id
+        response['inscriptiondate'] = '' if not inscription.exists() else inscription.first().createdate
         response['showid'] = '' if instance.showid == "" or instance.showid is None else ShowSerializer(
             instance.showid).data
         response['cityid'] = '' if instance.cityid == "" or instance.cityid is None else CitySerializer(

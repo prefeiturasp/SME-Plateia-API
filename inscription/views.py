@@ -28,17 +28,23 @@ class InscricaoVoucherViewSet(viewsets.GenericViewSet):
         if not (instance.userid.id == request.user.id):
             raise PermissionDenied()
 
-        ticket_data = instance.get_ticket_dict_raw()
-        ticket_str = instance.ticket_to_string(ticket_data)
+        ticket_dict = instance.get_ticket_dict()
+        ticket_str = instance.ticket_to_string(ticket_dict)
 
         qrcode = QRCode_generate(ticket_str)
 
         if not qrcode:
             raise ValidationError(detail='Não foi possível gerar QRcode')
 
-        ticket_data['qrcode'] = qrcode
+        ticket_dict['qrcode'] = qrcode
 
-        serializer = TicketSerializer(data=ticket_data)
+        pdf = generate_ticket_voucher(ticket_dict)
+        if not pdf:
+            raise ValidationError(detail='Não foi possível retornar voucher')
+
+        ticket_dict['voucher'] = pdf
+
+        serializer = TicketSerializer(data=ticket_dict)
 
         serializer.is_valid(raise_exception=True)
 
