@@ -119,7 +119,7 @@ class Event(models.Model):
         managed = False
 
     @staticmethod
-    def get_events_by_user_and_dates(user_id: str, start_date: str, end_date: str, previous_queryset=None):
+    def get_events_by_user_and_dates(user_id: str, start_date: str, end_date: str = None, previous_queryset=None):
         """
         Retorna um QuerySet com os eventos em que um determinado usuário está inscrito e que ocorrem
         entre as datas de início e fim especificadas.
@@ -130,38 +130,71 @@ class Event(models.Model):
         :param previous_queryset: Queryset para somar no filtro.
         :return: QuerySet com os eventos
         """
-        query = f"""
-            SELECT
-                "Event"."Schedule",
-                "Event"."Id",
-                "Event"."ShowId",
-                "Event"."CityId",
-                "Event"."Local",
-                "Event"."Address",
-                "Event"."PartnerCompany",
-                "Event"."PresentationDate",
-                "Event"."Schedule",
-                "Event"."EnrollStartAt",
-                "Event"."EnrollEndAt",
-                "Event"."TicketQuantity",
-                "Event"."TicketAvailable",
-                "Event"."TicketByMember",
-                "Event"."QueueSize",
-                "Event"."QueueRemaining",
-                "Event"."State",
-                "Event"."CreateDate",
-                "Event"."UpdateDate"
-            FROM
-                "Event"
-            INNER JOIN
-                "Inscription" ON ("Event"."Id" = "Inscription"."EventId")
-            WHERE
-                ("Inscription"."UserId" = '{user_id}')
-                AND (("Event"."Schedule" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
-                      AND "Event"."Schedule" <= to_timestamp('{end_date}', 'YYYY-MM-DD HH24:MI:SS'))
-                     OR ("Event"."PresentationDate" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
-                         AND "Event"."PresentationDate" <= to_timestamp('{end_date}', 'YYYY-MM-DD HH24:MI:SS')))
-        """
+
+        if end_date:
+            query = f"""
+                SELECT
+                    "Event"."Schedule",
+                    "Event"."Id",
+                    "Event"."ShowId",
+                    "Event"."CityId",
+                    "Event"."Local",
+                    "Event"."Address",
+                    "Event"."PartnerCompany",
+                    "Event"."PresentationDate",
+                    "Event"."Schedule",
+                    "Event"."EnrollStartAt",
+                    "Event"."EnrollEndAt",
+                    "Event"."TicketQuantity",
+                    "Event"."TicketAvailable",
+                    "Event"."TicketByMember",
+                    "Event"."QueueSize",
+                    "Event"."QueueRemaining",
+                    "Event"."State",
+                    "Event"."CreateDate",
+                    "Event"."UpdateDate"
+                FROM
+                    "Event"
+                INNER JOIN
+                    "Inscription" ON ("Event"."Id" = "Inscription"."EventId")
+                WHERE
+                    ("Inscription"."UserId" = '{user_id}')
+                    AND (("Event"."Schedule" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
+                        AND "Event"."Schedule" <= to_timestamp('{end_date}', 'YYYY-MM-DD HH24:MI:SS'))
+                        OR ("Event"."PresentationDate" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
+                            AND "Event"."PresentationDate" <= to_timestamp('{end_date}', 'YYYY-MM-DD HH24:MI:SS')))
+            """
+        else:
+            query = f"""
+                SELECT
+                    "Event"."Schedule",
+                    "Event"."Id",
+                    "Event"."ShowId",
+                    "Event"."CityId",
+                    "Event"."Local",
+                    "Event"."Address",
+                    "Event"."PartnerCompany",
+                    "Event"."PresentationDate",
+                    "Event"."Schedule",
+                    "Event"."EnrollStartAt",
+                    "Event"."EnrollEndAt",
+                    "Event"."TicketQuantity",
+                    "Event"."TicketAvailable",
+                    "Event"."TicketByMember",
+                    "Event"."QueueSize",
+                    "Event"."QueueRemaining",
+                    "Event"."State",
+                    "Event"."CreateDate",
+                    "Event"."UpdateDate"
+                FROM
+                    "Event"
+                INNER JOIN
+                    "Inscription" ON ("Event"."Id" = "Inscription"."EventId")
+                WHERE
+                    ("Inscription"."UserId" = '{user_id}')
+                    AND ("Event"."Schedule" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
+                        OR "Event"."PresentationDate" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS'))
+            """
         raw_queryset = Event.objects.raw(query)
 
         if previous_queryset:

@@ -1,3 +1,4 @@
+import datetime
 import logging
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -39,6 +40,9 @@ class EventosUsuarioViewSet(viewsets.ModelViewSet):
                 if period_init and period_end:
                     # Foi necessário utilizar raw query para tornar a busca com datas compatível com o banco SQL SERVER.
                     queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, period_end, previous_queryset=queryset)
+                else:
+                    period_init = datetime.datetime.today().strftime("%Y-%m-%d %H:%M")
+                    queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, previous_queryset=queryset)
             except ValueError as e:
                 raise ParseError(detail=e)
 
