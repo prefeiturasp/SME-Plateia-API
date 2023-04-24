@@ -30,23 +30,3 @@ def get_retrieve_voucher_scheme():
             ),
         },
     }
-
-
-def get_pdf_scheme():
-    return {
-        'description': 'Gerar voucher do ingresso em formato PDF como base64.',
-        'responses': {
-            200: OpenApiResponse(
-                description='200',
-                response=InscriptionSerializer,
-                examples=[
-                    OpenApiExample(
-                        name='Retorno 1',
-                        value={
-                            'voucher': '<base64>'
-                        }
-                    )
-                ]
-            ),
-        },
-    }

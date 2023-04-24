@@ -30,8 +30,7 @@ Este projeto implementa uma API RESTful que tem como objetivo fornecer acesso a 
 
 ### Ingressos
 
-- `api/v1/inscricao/<int:pk>/voucher`: retorna o ingresso com QR code
-- `api/v1/inscricao/<int:pk>/voucher/pdf`: retorna o PDF do voucher do ingresso
+- `api/v1/inscricao/<int:pk>/voucher`: retorna o QR code da inscrição e o PDF do ingresso.
 
 ## Testes
 
