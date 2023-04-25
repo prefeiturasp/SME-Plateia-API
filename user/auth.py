@@ -1,5 +1,6 @@
 import hashlib
 import base64
+import json
 from config.settings.base import env
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
@@ -113,11 +114,14 @@ class TripleDESPasswordHasher(BasePasswordHasher):
         encoded_2 = self.encode(password)
         return encoded == encoded_2
 
+    def get_array_bytes(self, key):
+        return bytes(json.loads(key))
+
     def encode(self, senha, salt=None):
         try:
             senhaByte = senha.encode('utf-8')
             backend = default_backend()
-            cipher = Cipher(algorithms.TripleDES(bytes(TRIPLEDES_KEY)), modes.CBC(bytes(TRIPLEDES_IV)), backend=backend)
+            cipher = Cipher(algorithms.TripleDES(self.get_array_bytes(TRIPLEDES_KEY)), modes.CBC(self.get_array_bytes(TRIPLEDES_IV)), backend=backend)
             padder = padding.PKCS7(cipher.algorithm.block_size).padder()
             padded_data = padder.update(senhaByte) + padder.finalize()
             encryptor = cipher.encryptor()
