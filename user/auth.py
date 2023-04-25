@@ -117,7 +117,7 @@ class TripleDESPasswordHasher(BasePasswordHasher):
         try:
             senhaByte = senha.encode('utf-8')
             backend = default_backend()
-            cipher = Cipher(algorithms.TripleDES(TRIPLEDES_KEY), modes.CBC(TRIPLEDES_IV), backend=backend)
+            cipher = Cipher(algorithms.TripleDES(TRIPLEDES_KEY.encode('utf-8')), modes.CBC(TRIPLEDES_IV.encode('utf-8')), backend=backend)
             padder = padding.PKCS7(cipher.algorithm.block_size).padder()
             padded_data = padder.update(senhaByte) + padder.finalize()
             encryptor = cipher.encryptor()
