@@ -247,7 +247,7 @@ SPECTACULAR_SETTINGS = {
 
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-PASSWORD_HASHERS
 
-PASSWORD_HASHERS = ['user.auth.PBKDF2SHA512PasswordHasher',]
+PASSWORD_HASHERS = ['user.auth.PBKDF2SHA512PasswordHasher', 'user.auth.TripleDESPasswordHasher']
 
 # Arquivos existentes estão na base do projeto legado.
 BASE_MEDIA_EXTERNAL_PATH = env(
