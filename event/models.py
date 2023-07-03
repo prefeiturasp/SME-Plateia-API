@@ -204,6 +204,61 @@ class Event(models.Model):
 
         return queryset
 
+    @staticmethod
+    def get_events_by_dates(start_date: str, end_date: str = None, previous_queryset=None):
+        """
+        Retorna um QuerySet com os eventos em que um determinado usuário está inscrito e que ocorrem
+        entre as datas de início e fim especificadas.
+
+        :param user_id: ID do usuário
+        :param start_date: Data de início no formato "YYYY-MM-DD HH:MM:SS"
+        :param end_date: Data de fim no formato "YYYY-MM-DD HH:MM:SS"
+        :param previous_queryset: Queryset para somar no filtro.
+        :return: QuerySet com os eventos
+        """
+
+        query = f"""
+            SELECT
+                "Event"."Schedule",
+                "Event"."Id",
+                "Event"."ShowId",
+                "Event"."CityId",
+                "Event"."Local",
+                "Event"."Address",
+                "Event"."PartnerCompany",
+                "Event"."PresentationDate",
+                "Event"."Schedule",
+                "Event"."EnrollStartAt",
+                "Event"."EnrollEndAt",
+                "Event"."TicketQuantity",
+                "Event"."TicketAvailable",
+                "Event"."TicketByMember",
+                "Event"."QueueSize",
+                "Event"."QueueRemaining",
+                "Event"."State",
+                "Event"."CreateDate",
+                "Event"."UpdateDate"
+            FROM
+                "Event"
+            INNER JOIN
+                "Inscription" ON ("Event"."Id" = "Inscription"."EventId")
+            WHERE
+                ("Event"."EnrollStartAt" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
+                AND "Event"."EnrollEndAt" <= to_timestamp('{end_date}', 'YYYY-MM-DD HH24:MI:SS'))
+                AND (("Event"."Schedule" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
+                    AND "Event"."Schedule" <= to_timestamp('{end_date}', 'YYYY-MM-DD HH24:MI:SS'))
+                    OR ("Event"."PresentationDate" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
+                        AND "Event"."PresentationDate" <= to_timestamp('{end_date}', 'YYYY-MM-DD HH24:MI:SS')))
+        """
+        raw_queryset = Event.objects.raw(query)
+
+        if previous_queryset:
+            queryset = previous_queryset.filter(Q(id__in=[item.id for item in raw_queryset]))
+        else:
+            queryset = Event.objects.filter(Q(id__in=[item.id for item in raw_queryset]))
+
+        return queryset
+
 
 class Eventhistory(models.Model):
     id = models.BigAutoField(db_column='Id', primary_key=True)
