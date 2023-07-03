@@ -2,6 +2,88 @@ from drf_spectacular.utils import OpenApiExample, OpenApiResponse, OpenApiParame
 from .serializers import EventSerializer
 
 
+def get_events_list_scheme():
+    return {
+        'description': 'Busca eventos.',
+        'responses': {
+            200: OpenApiResponse(
+                description='200',
+                response=EventSerializer,
+                examples=[
+                    OpenApiExample(
+                        name='Retorno 1',
+                        value={
+                            "IdEvento": 1767,
+                            "TipoEspetaculo": "TEATRO",
+                            "Titulo": "Hip Hop Blues - Espólio das águas",
+                            "Sintese": "\"Núcleo Bartolomeu de Depoimentos apresentará, no Teatro de Arena  Eugênio Kusnet, a peça “Hip Hop Blues Espólio das águas”, resultado de um processo pós-  pandêmico em diálogo com a reflexão sobre os 20 anos de pesquisa continuada do Núcleo  Bartolomeu.  Chovia, chovia muito. Os rios transbordaram e ocuparam São Paulo, reivindicando seu lugar  de fala, de existência. \"\"Hip-Hop Blues - Espólio das águas\"\" é um espetáculo tecido em  fragmentos onde seis atores buscam dar contorno as águas que correram nesses tempos.  Num jogo cênico que fricciona depoimento e ficção, o centro da ágora é permeado por  histórias e ancestralidades que revelam e contrapõem o racismo, a moralidade, a  lgtqia+fobia, a intolerância, a supremacia branca e patriarcal e seus inúmeros braços  estruturais.\"",
+                            "Data": "09/07/2023",
+                            "StatusInscricao": "Inscrições abertas"
+                        }
+                    )
+                ]
+            ),
+            400: OpenApiResponse(
+                description='400',
+                response=EventSerializer,
+                examples=[
+                    OpenApiExample(
+                        name='Erro formato parâmetro de data',
+                        value={
+                            "detail": "['O valor “20/23/20” tem um formato inválido. Deve estar no formato YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ].']"
+                        }
+                    )
+                ]
+            ),
+        },
+        'parameters': [
+            OpenApiParameter(name='nome', description='Nome do evento', required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name='periodo_inicio', description='Data início período de busca. formato: YYYY-MM-DD HH:MM',
+                             required=False, type=OpenApiTypes.DATETIME),
+            OpenApiParameter(name='periodo_fim', description='Data fim período de busca. formato: YYYY-MM-DD HH:MM',
+                             required=False, type=OpenApiTypes.DATETIME),
+        ]
+
+    }
+
+
+def get_events_retrieve_scheme():
+    return {
+        'description': 'Busca evento por ID.',
+        'responses': {
+            200: OpenApiResponse(
+                description='200',
+                response=EventSerializer,
+                examples=[
+                    OpenApiExample(
+                        name='Retorno 1',
+                        value={
+                            "IdEvento": 1767,
+                            "TipoEspetaculo": "TEATRO",
+                            "Titulo": "Hip Hop Blues - Espólio das águas",
+                            "Sintese": "\"Núcleo Bartolomeu de Depoimentos apresentará, no Teatro de Arena  Eugênio Kusnet, a peça “Hip Hop Blues Espólio das águas”, resultado de um processo pós-  pandêmico em diálogo com a reflexão sobre os 20 anos de pesquisa continuada do Núcleo  Bartolomeu.  Chovia, chovia muito. Os rios transbordaram e ocuparam São Paulo, reivindicando seu lugar  de fala, de existência. \"\"Hip-Hop Blues - Espólio das águas\"\" é um espetáculo tecido em  fragmentos onde seis atores buscam dar contorno as águas que correram nesses tempos.  Num jogo cênico que fricciona depoimento e ficção, o centro da ágora é permeado por  histórias e ancestralidades que revelam e contrapõem o racismo, a moralidade, a  lgtqia+fobia, a intolerância, a supremacia branca e patriarcal e seus inúmeros braços  estruturais.\"",
+                            "Data": "09/07/2023",
+                            "StatusInscricao": "Inscrições abertas"
+                        }
+                    )
+                ]
+            ),
+            404: OpenApiResponse(
+                description='404',
+                response=EventSerializer,
+                examples=[
+                    OpenApiExample(
+                        name='ID não encontrado',
+                        value={
+                            "detail": "Não encontrado."
+                        }
+                    )
+                ]
+            ),
+        },
+    }
+
+
 def get_user_events_list_scheme():
     return {
         'description': 'Busca meus eventos.',
