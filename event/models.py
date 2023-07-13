@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.conf import settings
 from django.db.models import Q
@@ -210,7 +211,6 @@ class Event(models.Model):
         Retorna um QuerySet com os eventos em que um determinado usuário está inscrito e que ocorrem
         entre as datas de início e fim especificadas.
 
-        :param user_id: ID do usuário
         :param start_date: Data de início no formato "YYYY-MM-DD HH:MM:SS"
         :param end_date: Data de fim no formato "YYYY-MM-DD HH:MM:SS"
         :param previous_queryset: Queryset para somar no filtro.
@@ -240,11 +240,9 @@ class Event(models.Model):
                 "Event"."UpdateDate"
             FROM
                 "Event"
-            INNER JOIN
-                "Inscription" ON ("Event"."Id" = "Inscription"."EventId")
             WHERE
-                ("Event"."EnrollStartAt" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
-                AND "Event"."EnrollEndAt" <= to_timestamp('{end_date}', 'YYYY-MM-DD HH24:MI:SS'))
+                ("Event"."EnrollStartAt" <= to_timestamp('{datetime.now().date()}', 'YYYY-MM-DD HH24:MI:SS')
+                AND "Event"."EnrollEndAt" >= to_timestamp('{datetime.now().date()}', 'YYYY-MM-DD HH24:MI:SS'))
                 AND (("Event"."Schedule" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
                     AND "Event"."Schedule" <= to_timestamp('{end_date}', 'YYYY-MM-DD HH24:MI:SS'))
                     OR ("Event"."PresentationDate" >= to_timestamp('{start_date}', 'YYYY-MM-DD HH24:MI:SS')
