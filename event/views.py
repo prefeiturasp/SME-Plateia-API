@@ -11,7 +11,7 @@ from user.auth import CustomJWTAuthentication, isAuthenticated
 
 from .models import Event
 from .serializers import EventSerializer, EventDetailSerializer
-from .swagger import (get_user_events_list_scheme, get_user_events_retrieve_scheme, 
+from .swagger import (get_user_events_list_scheme, get_user_events_retrieve_scheme,
                       get_locais_eventos_usuario_list_scheme, get_events_list_scheme, get_events_retrieve_scheme)
 
 logger = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ class EventosViewSet(viewsets.ModelViewSet):
             period_init = datetime.now().date()
             period_end = period_init + timedelta(days=6)
 
-        queryset = Event.objects.filter(ticketavailable__gt=0).order_by('-presentationdate')
+        queryset = Event.objects.filter(ticketavailable__gt=0).order_by('presentationdate')
 
         try:
             try:
@@ -75,13 +75,13 @@ class EventosViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         return Response({
-                'IdEvento': instance.showid.id,
-                'TipoEspetaculo': instance.showid.showtypeid.name,
-                'Titulo': instance.showid.name,
-                'Sintese': instance.showid.synopsis,
-                'Data': instance.presentationdate.strftime('%d/%m/%Y'),
-                'StatusInscricao': 'Inscrições abertas'
-            })
+            'IdEvento': instance.showid.id,
+            'TipoEspetaculo': instance.showid.showtypeid.name,
+            'Titulo': instance.showid.name,
+            'Sintese': instance.showid.synopsis,
+            'Data': instance.presentationdate.strftime('%d/%m/%Y'),
+            'StatusInscricao': 'Inscrições abertas'
+        })
 
 
 @extend_schema_view(
@@ -109,9 +109,9 @@ class EventosUsuarioViewSet(viewsets.ModelViewSet):
                 if period_init and period_end:
                     # Foi necessário utilizar raw query para tornar a busca com datas compatível com o banco SQL SERVER.
                     queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, period_end, previous_queryset=queryset)
-                else:
-                    period_init = datetime.datetime.today().strftime("%Y-%m-%d %H:%M")
-                    queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, previous_queryset=queryset)
+                # else:
+                #     period_init = datetime.datetime.today().strftime("%Y-%m-%d %H:%M")
+                #     queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, previous_queryset=queryset)
             except ValueError as e:
                 raise ParseError(detail=e)
 
