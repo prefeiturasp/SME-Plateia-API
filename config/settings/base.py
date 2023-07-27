@@ -250,6 +250,7 @@ SPECTACULAR_SETTINGS = {
 PASSWORD_HASHERS = ['user.auth.PBKDF2SHA512PasswordHasher', 'user.auth.TripleDESPasswordHasher']
 
 # Arquivos existentes estão na base do projeto legado.
+
 BASE_MEDIA_EXTERNAL_PATH = env(
     "DJANGO_BASE_PATH_EXTERNAL_MEDIA",
     default="https://plateia.sme.prefeitura.sp.gov.br",
