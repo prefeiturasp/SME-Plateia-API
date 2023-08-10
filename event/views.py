@@ -1,4 +1,3 @@
-import datetime
 import logging
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -25,6 +24,7 @@ class EventosViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
     permission_classes = [AllowAny]
+    authentication_classes = ()
     pagination_class = None
     http_method_names = ['get']
 
@@ -109,9 +109,6 @@ class EventosUsuarioViewSet(viewsets.ModelViewSet):
                 if period_init and period_end:
                     # Foi necessário utilizar raw query para tornar a busca com datas compatível com o banco SQL SERVER.
                     queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, period_end, previous_queryset=queryset)
-                # else:
-                #     period_init = datetime.datetime.today().strftime("%Y-%m-%d %H:%M")
-                #     queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, previous_queryset=queryset)
             except ValueError as e:
                 raise ParseError(detail=e)
 
@@ -128,7 +125,7 @@ class EventosUsuarioViewSet(viewsets.ModelViewSet):
             logger.error('Erro: %r', erro)
             raise Exception(e)
 
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(queryset.order_by('-schedule'))
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
 
