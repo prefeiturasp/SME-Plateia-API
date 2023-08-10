@@ -1,16 +1,13 @@
 import requests
-from config.settings.base import env
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.backends import ModelBackend
+from django.core.exceptions import MultipleObjectsReturned
 from rest_framework.exceptions import NotFound
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework import permissions
-
-
-from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth import get_user_model
+from config.settings.base import env
 from .models import User
 
 AUTENTICA_CORESSO_API_TOKEN = env('AUTENTICA_CORESSO_API_TOKEN', default='')
@@ -35,20 +32,24 @@ class AuthBackend():
                 timeout=DEFAULT_TIMEOUT,
                 json=payload
             )
+            if response.status_code == 200 and 'login' in response.json():
+                try:
+                    user = User.objects.get(rf=rf)
+                except MultipleObjectsReturned:
+                    user = None
+                    users = User.objects.filter(rf=rf)
+                    for _user in users:
+                        if _user.isadmin is False:
+                            user = _user
+                except User.DoesNotExist:
+                    user = None
 
-            if response.status_code == 200:
-                if 'login' in response.json():
-                    try:
-                        users = User.objects.filter(rf=rf)
-                        for user in users:
-                            if user.isadmin is False:
-                                return user
-                    except Exception as e:
-                        print(e)
-                        raise NotFound(f"Usuário {rf} CORESSO não foi encontrado na base do Plateia")
+                if user:
+                    return user
                 else:
-                    raise NotFound(response.json()['detail'])
-
+                    raise NotFound(f"Usuário {rf} CORESSO não foi encontrado na base do Plateia")
+            else:
+                raise Exception({'error': response.json(), 'status': response.status_code})
         except Exception as e:
             raise e
 
