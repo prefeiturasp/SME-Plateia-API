@@ -202,9 +202,7 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-AUTHENTICATION_BACKENDS
 
 AUTHENTICATION_BACKENDS = [
-    # 'django.contrib.auth.backends.ModelBackend',  # mantém o backend padrão do Django
     'user.auth.CustomAuthBackend',
-    'user.auth.CustomUserBackend',  # backend personalizado para autenticação com o campo "login"
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
@@ -244,10 +242,6 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     'CACHE_ENABLED': False,
 }
-
-# https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-PASSWORD_HASHERS
-
-PASSWORD_HASHERS = ['user.auth.PBKDF2SHA512PasswordHasher', 'user.auth.TripleDESPasswordHasher']
 
 # Arquivos existentes estão na base do projeto legado.
 
