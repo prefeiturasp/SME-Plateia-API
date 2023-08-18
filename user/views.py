@@ -24,8 +24,10 @@ class JWTAuthenticationViewSet(viewsets.GenericViewSet):
             raise ValidationError(detail='login e senha obrigatórios')
         try:
             user = authenticate(request, username=rf, password=password)
+        except ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'detail': 'Houve um erro ao tentar realizar comunicação com o servidor de autenticação.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if user:
             refresh = RefreshToken.for_user(user)

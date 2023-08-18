@@ -2,7 +2,7 @@ import requests
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.backends import ModelBackend
 from django.core.exceptions import MultipleObjectsReturned
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.settings import api_settings
@@ -32,6 +32,7 @@ class AuthBackend():
                 timeout=DEFAULT_TIMEOUT,
                 json=payload
             )
+
             if response.status_code == 200 and 'login' in response.json():
                 try:
                     user = User.objects.get(rf=rf)
@@ -47,9 +48,9 @@ class AuthBackend():
                 if user:
                     return user
                 else:
-                    raise NotFound(f"Usuário {rf} CORESSO não foi encontrado na base do Plateia")
+                    raise ValidationError(detail={'detail': f"Usuário {rf} CORESSO não foi encontrado na base do Plateia."})
             else:
-                raise Exception({'error': response.json(), 'status': response.status_code})
+                raise ValidationError(detail=response.json())
         except Exception as e:
             raise e
 
