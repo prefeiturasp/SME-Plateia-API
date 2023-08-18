@@ -1,5 +1,5 @@
-import datetime
 import logging
+from datetime import datetime, timedelta
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -25,6 +25,7 @@ class EventosViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
     permission_classes = [AllowAny]
+    authentication_classes = ()
     pagination_class = None
     http_method_names = ['get']
 
@@ -32,8 +33,6 @@ class EventosViewSet(viewsets.ModelViewSet):
         name = request.GET.get('nome')
         period_init = request.GET.get('periodo_inicio')
         period_end = request.GET.get('periodo_fim')
-
-        from datetime import datetime, timedelta
 
         if not (period_init and period_end):
             period_init = datetime.now().date()
@@ -101,34 +100,32 @@ class EventosUsuarioViewSet(viewsets.ModelViewSet):
         period_init = request.GET.get('periodo_inicio')
         period_end = request.GET.get('periodo_fim')
         local = request.GET.get('local')
+        ativos = request.GET.get('ativos', 0)
 
-        queryset = Event.objects.filter(inscription__userid__id=request.user.id).order_by('-schedule')
+        queryset = Event.objects.filter(inscription__userid__id=request.user.id)
 
         try:
-            try:
-                if period_init and period_end:
-                    # Foi necessário utilizar raw query para tornar a busca com datas compatível com o banco SQL SERVER.
-                    queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, period_end, previous_queryset=queryset)
-                # else:
-                #     period_init = datetime.datetime.today().strftime("%Y-%m-%d %H:%M")
-                #     queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, previous_queryset=queryset)
-            except ValueError as e:
-                raise ParseError(detail=e)
-
+            if period_init and period_end:
+                # Foi necessário utilizar raw query para tornar a busca com datas compatível com o banco SQL SERVER.
+                queryset = Event.get_events_by_user_and_dates(request.user.id, period_init, period_end, previous_queryset=queryset)
             if name:
                 queryset = queryset.filter(showid__name__contains=name)
             if local:
                 queryset = queryset.filter(local__contains=local)
-
+            if int(ativos) == 1:
+                queryset = Event.get_active_events(request.user.id,  previous_queryset=queryset).order_by('presentationdate')
+            else:
+                queryset = Event.get_inactive_events(request.user.id,  previous_queryset=queryset).order_by('-presentationdate')
         except Exception as e:
             erro = {
-                'caminho': 'EventosUsuarioViewSet > list',
-                'mensagem': str(e)
+                'error': str(e),
+                'detail': 'Não foi possível retornar eventos.'
             }
             logger.error('Erro: %r', erro)
             raise Exception(e)
 
         page = self.paginate_queryset(queryset)
+
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
 
