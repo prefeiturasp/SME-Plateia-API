@@ -120,6 +120,107 @@ class Event(models.Model):
         managed = False
 
     @staticmethod
+    def get_active_events(user_id: str, previous_queryset=None):
+        """
+        Retorna um QuerySet com os próximos eventos.
+
+        :param user_id: ID do usuário
+        :return: QuerySet com os eventos
+        """
+
+        now = datetime.now()
+        now = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        query = f"""
+            SELECT
+                "Event"."Schedule",
+                "Event"."Id",
+                "Event"."ShowId",
+                "Event"."CityId",
+                "Event"."Local",
+                "Event"."Address",
+                "Event"."PartnerCompany",
+                "Event"."PresentationDate",
+                "Event"."Schedule",
+                "Event"."EnrollStartAt",
+                "Event"."EnrollEndAt",
+                "Event"."TicketQuantity",
+                "Event"."TicketAvailable",
+                "Event"."TicketByMember",
+                "Event"."QueueSize",
+                "Event"."QueueRemaining",
+                "Event"."State",
+                "Event"."CreateDate",
+                "Event"."UpdateDate"
+            FROM
+                "Event"
+            INNER JOIN
+                "Inscription" ON ("Event"."Id" = "Inscription"."EventId")
+            WHERE
+                ("Inscription"."UserId" = '{user_id}')
+                AND "Event"."PresentationDate" >= to_timestamp('{now}', 'YYYY-MM-DD HH24:MI:SS')
+        """
+        raw_queryset = Event.objects.raw(query)
+
+        if previous_queryset:
+            queryset = previous_queryset.filter(Q(id__in=[item.id for item in raw_queryset]))
+        else:
+            queryset = Event.objects.filter(Q(id__in=[item.id for item in raw_queryset]))
+        for item in queryset:
+            print(item.presentationdate)
+        return queryset
+
+    @staticmethod
+    def get_inactive_events(user_id: str, previous_queryset=None):
+        """
+        Retorna um QuerySet com os eventos passados.
+
+        :param user_id: ID do usuário
+        :return: QuerySet com os eventos
+        """
+
+        now = datetime.now()
+        now = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        query = f"""
+            SELECT
+                "Event"."Schedule",
+                "Event"."Id",
+                "Event"."ShowId",
+                "Event"."CityId",
+                "Event"."Local",
+                "Event"."Address",
+                "Event"."PartnerCompany",
+                "Event"."PresentationDate",
+                "Event"."Schedule",
+                "Event"."EnrollStartAt",
+                "Event"."EnrollEndAt",
+                "Event"."TicketQuantity",
+                "Event"."TicketAvailable",
+                "Event"."TicketByMember",
+                "Event"."QueueSize",
+                "Event"."QueueRemaining",
+                "Event"."State",
+                "Event"."CreateDate",
+                "Event"."UpdateDate"
+            FROM
+                "Event"
+            INNER JOIN
+                "Inscription" ON ("Event"."Id" = "Inscription"."EventId")
+            WHERE
+                ("Inscription"."UserId" = '{user_id}')
+                AND "Event"."PresentationDate" < to_timestamp('{now}', 'YYYY-MM-DD HH24:MI:SS')
+        """
+        raw_queryset = Event.objects.raw(query)
+
+        if previous_queryset:
+            queryset = previous_queryset.filter(Q(id__in=[item.id for item in raw_queryset]))
+        else:
+            queryset = Event.objects.filter(Q(id__in=[item.id for item in raw_queryset]))
+
+        return queryset
+
+    @staticmethod
     def get_events_by_user_and_dates(user_id: str, start_date: str, end_date: str = None, previous_queryset=None):
         """
         Retorna um QuerySet com os eventos em que um determinado usuário está inscrito e que ocorrem

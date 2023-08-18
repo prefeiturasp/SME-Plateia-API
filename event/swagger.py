@@ -186,6 +186,8 @@ def get_user_events_list_scheme():
             OpenApiParameter(name='local', description='Local do evento', required=False, type=OpenApiTypes.STR),
             OpenApiParameter(name='page', description='Um número de página dentro do conjunto de resultados paginados',
                              required=False, type=OpenApiTypes.INT),
+            OpenApiParameter(name='ativos', description='Um inteiro [0: false, 1: true] para inidicar se deve ser retornado apenas os próximos eventos ou somente os passados',
+                             required=False, type=OpenApiTypes.INT)
         ]
 
     }

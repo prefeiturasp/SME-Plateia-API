@@ -8,7 +8,7 @@ from drf_spectacular.utils import extend_schema
 from .serializers import BaseUserSerializer, UserSerializer, SwaggerLoginSerializer
 
 
-class JWTAuthenticationViewSet(viewsets.ModelViewSet):
+class JWTAuthenticationViewSet(viewsets.GenericViewSet):
     serializer_class = BaseUserSerializer
     http_method_names = ['post']
     authentication_classes = ()
@@ -22,8 +22,13 @@ class JWTAuthenticationViewSet(viewsets.ModelViewSet):
 
         if not (rf and password):
             raise ValidationError(detail='login e senha obrigatórios')
+        try:
+            user = authenticate(request, username=rf, password=password)
+        except ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'detail': 'Houve um erro ao tentar realizar comunicação com o servidor de autenticação.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = authenticate(request, rf=rf, password=password)
         if user:
             refresh = RefreshToken.for_user(user)
             serializer = UserSerializer(user)
