@@ -18,6 +18,16 @@ class Inscription(models.Model):
         db_table = 'Inscription'
         managed = False
 
+    @property
+    def waiting_list(self):
+        inscriptions_all = self.eventid.inscription_set.filter(priority=1).order_by('createdate').values('id')
+        inscriptions = (inscriptions_all[:self.eventid.ticketquantity])
+
+        if any(inscription['id'] == self.id for inscription in inscriptions):
+            return False
+        else:
+            return True
+
     def get_ticket_dict_raw(self):
         ticket = {
             'inscricao_id': self.id,
