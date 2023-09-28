@@ -28,6 +28,9 @@ class InscricaoVoucherViewSet(viewsets.GenericViewSet):
         if not (instance.userid.id == request.user.id):
             raise PermissionDenied()
 
+        if instance.waiting_list:
+            raise ValidationError(detail='Inscrição em lista de espera! Não é possível emitir voucher.')
+
         ticket_dict = instance.get_ticket_dict()
         ticket_str = instance.ticket_to_string(ticket_dict)
 

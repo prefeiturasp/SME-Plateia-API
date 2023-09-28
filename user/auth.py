@@ -1,5 +1,5 @@
 import requests
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, User as DjangoUser
 from django.contrib.auth.backends import ModelBackend
 from django.core.exceptions import MultipleObjectsReturned
 from rest_framework.exceptions import ValidationError
@@ -24,6 +24,13 @@ class AuthBackend():
         DEFAULT_TIMEOUT = 10
 
         payload = {'login': rf, 'senha': password}
+
+        try:
+            user = DjangoUser.objects.get(username=rf)
+            if user.check_password(password):
+                return user
+        except DjangoUser.DoesNotExist:
+            pass
 
         try:
             response = requests.post(
