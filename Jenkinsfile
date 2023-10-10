@@ -6,9 +6,11 @@ pipeline {
       namespace = "${env.branchname == 'develop' ? 'plateia-api-dev' : env.branchname == 'homolog' ? 'plateia-api-hom' : env.branchname == 'homolog-r2' ? 'plateia-api-hom2' : 'sme-plateia-api' }"
     }
 
-    agent {
-      node { label 'AGENT-NODES' }
-    }
+    agent { kubernetes { 
+              label 'builder'
+              defaultContainer 'builder'
+            }
+          }
 
     options {
       buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
